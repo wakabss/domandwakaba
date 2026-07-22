@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>our tokyo week</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7BC4B0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="tokyo">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -42,10 +49,20 @@
   header{padding:44px 28px 10px;position:relative;}
   .hero-title{
     font-family:'Inter',sans-serif;font-weight:400;
-    font-size:clamp(64px, 15vw, 128px);line-height:0.9;color:var(--yellow);letter-spacing:-2px;
+    font-size:clamp(64px, 15vw, 128px);line-height:0.9;letter-spacing:-2px;
     -webkit-text-stroke:1px var(--ink);
     margin:0 0 6px;
     outline:none;white-space:nowrap;
+    background:linear-gradient(100deg, var(--yellow) 35%, #fff8d6 47%, var(--yellow) 59%);
+    background-size:250% 100%;
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;-webkit-text-fill-color:transparent;
+    animation:shine 7s ease-in-out infinite;
+  }
+  @keyframes shine{
+    0%{background-position:180% 0;}
+    45%{background-position:-80% 0;}
+    100%{background-position:-80% 0;}
   }
   .hero-sub{
     font-size:15px;color:var(--cream);opacity:0.92;margin:4px 0 18px;
@@ -68,8 +85,20 @@
     background:transparent;color:var(--cream);
     border:2px solid var(--cream);border-radius:30px;
     padding:8px 16px;cursor:pointer;
+    position:relative;overflow:hidden;
   }
   .tab.active{background:var(--yellow);color:var(--ink);border-color:var(--yellow);}
+  .tab.active::after{
+    content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(100deg, transparent, rgba(255,255,255,0.65), transparent);
+    animation:tabshine 5s ease-in-out infinite;
+    animation-delay:1.5s;
+  }
+  @keyframes tabshine{
+    0%{left:-60%;}
+    35%{left:130%;}
+    100%{left:130%;}
+  }
   .tab .count{opacity:0.65;font-family:'Inter',sans-serif;font-weight:400;margin-left:4px;}
 
   main{padding:26px 28px 10px;}
@@ -79,6 +108,20 @@
     color:var(--ink);
   }
   .addbar-title{font-family:'Inter',sans-serif;font-size:13px;margin-bottom:10px;color:var(--green-darker);}
+  .picker-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+  .picker-label{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink);opacity:0.6;}
+  .picker-btn{
+    width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink);background:var(--cream);
+    color:var(--ink);font-family:'Inter',sans-serif;font-weight:700;font-size:12px;cursor:pointer;
+    opacity:0.55;
+  }
+  .picker-btn.selected{background:var(--red);color:var(--cream);border-color:var(--red);opacity:1;}
+  .card-picker{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:18px;height:18px;border-radius:50%;background:var(--red);color:var(--cream);
+    font-family:'Inter',sans-serif;font-weight:700;font-size:10px;cursor:pointer;flex-shrink:0;
+    margin-left:6px;
+  }
   .addbar-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
   .addbar input, .addbar textarea{
     width:100%;border:1.5px solid var(--green);border-radius:8px;
@@ -127,6 +170,52 @@
     cursor:pointer;line-height:1;padding:2px;
   }
   .del:hover{color:var(--red);}
+  .undo-toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--cream);
+    padding:11px 16px;border-radius:30px;
+    font-family:'Inter',sans-serif;font-size:13px;
+    display:flex;align-items:center;gap:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.28);
+    opacity:0;pointer-events:none;transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:50;
+  }
+  .undo-toast.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0);}
+  .undo-toast #undoBtn{
+    background:var(--yellow);color:var(--ink);border:none;border-radius:20px;
+    padding:5px 12px;font-family:'Inter',sans-serif;font-weight:700;font-size:12.5px;cursor:pointer;
+  }
+  .milestone-popup{
+    position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-30px) scale(0.9);
+    background:var(--cream);color:var(--ink);
+    padding:16px 22px;border-radius:12px;
+    font-family:'Inter',sans-serif;font-weight:700;font-size:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);
+    opacity:0;pointer-events:none;transition:opacity 0.4s ease, transform 0.4s ease;
+    z-index:60;text-align:center;
+  }
+  .milestone-popup.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0) scale(1);}
+  .milestone-close{position:absolute;top:2px;right:8px;border:none;background:none;color:#9a9686;font-size:14px;cursor:pointer;}
+  .lock-screen{
+    position:fixed;inset:0;z-index:1000;background:var(--green);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+  }
+  .lock-screen.hidden{display:none;}
+  .lock-card{
+    background:var(--cream);border-radius:14px;padding:32px 28px;max-width:320px;width:100%;
+    text-align:center;box-shadow:0 12px 30px rgba(0,0,0,0.3);
+  }
+  .lock-title{font-family:'Inter',sans-serif;font-weight:700;font-size:22px;color:var(--ink);margin:0 0 6px;}
+  .lock-sub{font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);opacity:0.7;margin:0 0 18px;}
+  .lock-card input{
+    width:100%;padding:10px 12px;border:1.5px solid rgba(28,53,66,0.2);border-radius:8px;
+    font-family:'Inter',sans-serif;font-size:14px;margin-bottom:12px;background:var(--green);color:var(--ink);
+  }
+  .lock-card button{
+    width:100%;padding:10px;border:none;border-radius:30px;background:var(--red);color:var(--cream);
+    font-family:'Inter',sans-serif;font-weight:700;font-size:14px;cursor:pointer;
+  }
+  .lock-error{font-family:'Inter',sans-serif;font-size:12px;color:var(--red);margin:10px 0 0;min-height:14px;}
 
   .card.highlight{animation:cardFlash 1.4s ease;}
   @keyframes cardFlash{
@@ -208,6 +297,15 @@
 </style>
 </head>
 <body>
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-title">wakaba and dom's<br>tokyo itinerary</div>
+    <p class="lock-sub">what is the name of our future orange cat?</p>
+    <input type="text" id="lockInput" placeholder="type your answer" autocomplete="off">
+    <button id="lockBtn">unlock</button>
+    <p class="lock-error" id="lockError"></p>
+  </div>
+</div>
 <div class="wrap">
 
   <div class="top-band">
@@ -290,11 +388,26 @@
         <input id="f-day" placeholder="day / date tag (optional)">
       </div>
       <textarea id="f-note" placeholder="why we want to go / notes..."></textarea>
+      <div class="picker-row">
+        <span class="picker-label">who picked it:</span>
+        <button type="button" class="picker-btn" id="pickW" data-val="W">W</button>
+        <button type="button" class="picker-btn" id="pickD" data-val="D">D</button>
+      </div>
       <br><br>
-      <button class="addbtn" id="addBtn">add to list</button>
+      <button class="addbtn" id="addBtn">add to list ☞</button>
     </div>
 
     <div class="cards" id="cardList"></div>
+
+    <div class="undo-toast" id="undoToast">
+      <span id="undoToastText">removed</span>
+      <button id="undoBtn">undo</button>
+    </div>
+
+    <div class="milestone-popup" id="milestonePopup">
+      <button class="milestone-close" id="milestoneClose" aria-label="close">&times;</button>
+      <div class="milestone-text" id="milestoneText"></div>
+    </div>
   </main>
 
   <svg width="100%" height="20" preserveAspectRatio="none" viewBox="0 0 100 20" style="display:block;transform:rotate(180deg);">
@@ -582,6 +695,17 @@ function renderCards(){
     });
     top.appendChild(area);
 
+    const picker = document.createElement('span');
+    picker.className = 'card-picker';
+    picker.textContent = item.picker || '+';
+    picker.title = 'who picked this — click to change';
+    picker.style.opacity = item.picker ? '1' : '0.35';
+    picker.onclick = ()=>{
+      item.picker = item.picker === 'W' ? 'D' : (item.picker === 'D' ? null : 'W');
+      saveState(); renderCards();
+    };
+    top.appendChild(picker);
+
     body.appendChild(top);
 
     const note = document.createElement('div');
@@ -648,8 +772,11 @@ function renderCards(){
     del.className = 'del';
     del.innerHTML = '&times;';
     del.onclick = ()=>{
+      const removedItem = state.items[state.active][idx];
+      const removedCat = state.active;
       state.items[state.active].splice(idx,1);
       saveState(); renderTabs(); renderCards(); renderMap();
+      showUndoToast(removedItem, removedCat, idx);
     };
     card.appendChild(del);
 
@@ -657,6 +784,39 @@ function renderCards(){
     list.appendChild(card);
   });
 }
+
+let undoTimer = null;
+function showUndoToast(item, catId, atIndex){
+  const toast = document.getElementById('undoToast');
+  const text = document.getElementById('undoToastText');
+  const btn = document.getElementById('undoBtn');
+  if(!toast) return;
+  text.textContent = 'removed "' + item.name + '"';
+  clearTimeout(undoTimer);
+  toast.classList.add('show');
+  undoTimer = setTimeout(()=>{ toast.classList.remove('show'); }, 6000);
+  btn.onclick = ()=>{
+    const arr = state.items[catId];
+    const insertAt = Math.min(atIndex, arr.length);
+    arr.splice(insertAt, 0, item);
+    if(catId === state.active){ state.active = catId; }
+    saveState(); renderTabs(); renderCards(); renderMap();
+    toast.classList.remove('show');
+    clearTimeout(undoTimer);
+  };
+}
+
+let pendingPicker = null;
+document.getElementById('pickW').addEventListener('click', ()=>{
+  pendingPicker = pendingPicker === 'W' ? null : 'W';
+  document.getElementById('pickW').classList.toggle('selected', pendingPicker==='W');
+  document.getElementById('pickD').classList.remove('selected');
+});
+document.getElementById('pickD').addEventListener('click', ()=>{
+  pendingPicker = pendingPicker === 'D' ? null : 'D';
+  document.getElementById('pickD').classList.toggle('selected', pendingPicker==='D');
+  document.getElementById('pickW').classList.remove('selected');
+});
 
 function addItem(){
   const name = document.getElementById('f-name').value.trim();
@@ -668,10 +828,14 @@ function addItem(){
     link: document.getElementById('f-link').value.trim(),
     day: document.getElementById('f-day').value.trim(),
     note: document.getElementById('f-note').value.trim(),
+    picker: pendingPicker,
     done: false
   };
   state.items[state.active].push(item);
   ['f-name','f-area','f-link','f-day','f-note'].forEach(id=>document.getElementById(id).value='');
+  pendingPicker = null;
+  document.getElementById('pickW').classList.remove('selected');
+  document.getElementById('pickD').classList.remove('selected');
   saveState();
   renderTabs();
   renderCards();
@@ -688,6 +852,24 @@ function updateCountdown(){
   if(diffDays > 0) el.textContent = diffDays + ' days';
   else if(diffDays === 0) el.textContent = 'today!!';
   else el.textContent = 'he is here';
+  checkMilestone(diffDays);
+}
+
+function checkMilestone(diffDays){
+  const milestones = {
+    30: "30 days until tokyo 🎉",
+    7: "one week to go!! 🎊",
+    0: "today's the day!!! ✈️"
+  };
+  if(!(diffDays in milestones)) return;
+  const key = 'milestoneShown_' + diffDays;
+  if(localStorage.getItem(key) === 'yes') return;
+  localStorage.setItem(key, 'yes');
+  const popup = document.getElementById('milestonePopup');
+  const text = document.getElementById('milestoneText');
+  if(!popup || !text) return;
+  text.textContent = milestones[diffDays];
+  setTimeout(()=>{ popup.classList.add('show'); }, 500);
 }
 
 document.getElementById('addBtn').addEventListener('click', addItem);
@@ -720,6 +902,53 @@ function maybeShowLoveNote(){
 document.getElementById('loveNoteClose').addEventListener('click', ()=>{
   document.getElementById('loveNote').classList.remove('show');
 });
+
+document.getElementById('milestoneClose').addEventListener('click', ()=>{
+  document.getElementById('milestonePopup').classList.remove('show');
+});
+
+(function initLockScreen(){
+  const lockScreen = document.getElementById('lockScreen');
+  const lockInput = document.getElementById('lockInput');
+  const lockBtn = document.getElementById('lockBtn');
+  const lockError = document.getElementById('lockError');
+  if(!lockScreen) return;
+
+  if(localStorage.getItem('tokyoUnlocked') === 'yes'){
+    lockScreen.classList.add('hidden');
+    return;
+  }
+
+  async function tryUnlock(){
+    const pw = lockInput.value;
+    if(!pw) return;
+    lockBtn.disabled = true;
+    lockBtn.textContent = 'checking...';
+    try{
+      const res = await fetch('/api/check-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw })
+      });
+      const data = await res.json();
+      if(data.ok){
+        localStorage.setItem('tokyoUnlocked', 'yes');
+        lockScreen.classList.add('hidden');
+      } else {
+        lockError.textContent = data.error ? data.error : 'not quite — try again';
+        lockInput.value = '';
+        lockInput.focus();
+      }
+    }catch(e){
+      lockError.textContent = 'could not reach the server — try again';
+    }
+    lockBtn.disabled = false;
+    lockBtn.textContent = 'unlock';
+  }
+
+  lockBtn.addEventListener('click', tryUnlock);
+  lockInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') tryUnlock(); });
+})();
 
 loadState();
 </script>
